@@ -10,7 +10,7 @@ describe('Unit | auto-computed', function() {
       a: 5,
       b: 37,
       computed: computed(function() {
-        return this.get('a') + this.get('b');
+        return Ember.get(this, 'a') + this.get('b');
       }),
     }).create();
 
@@ -22,7 +22,7 @@ describe('Unit | auto-computed', function() {
       a: 5,
       b: 37,
       computed: computed(function() {
-        return this.get('a') + this.get('b');
+        return Ember.get(this, 'a') + this.get('b');
       }),
     }).create();
 
