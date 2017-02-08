@@ -32,4 +32,25 @@ describe('Unit | auto-computed', function() {
 
     expect(obj.get('computed')).to.equal(38);
   });
+
+  it.skip('works for nested computed properties', function() {
+    let obj = Ember.Object.extend({
+      a: 0,
+      b: computed(function() {
+        return Ember.get(this, 'a') + 5;
+      }),
+      c: computed(function() {
+        return Ember.get(this, 'b') - 25;
+      }),
+    }).create();
+
+    expect(obj.get('b')).to.equal(5);
+    expect(obj.get('c')).to.equal(-25);
+
+    obj.set('a', 37);
+
+    expect(obj.get('b')).to.equal(42);
+    expect(obj.get('c')).to.equal(17);
+  });
+
 });
