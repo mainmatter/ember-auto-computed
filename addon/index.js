@@ -6,18 +6,18 @@ export default function(cb) {
 
 let originalGet = Ember.get;
 
-function newGet(...args) {
-  console.log(args);
-  return originalGet(...args);
+function newGet(obj, keyName) {
+  console.log(obj, keyName);
+  return originalGet(obj, keyName);
 }
 
 Ember.get = newGet;
 
 let originalBoundGet = Ember.Object.prototype.get;
 
-function newBoundGet(...args) {
-  console.log(args);
-  return originalBoundGet.call(this, ...args);
+function newBoundGet(keyName) {
+  console.log(this, keyName);
+  return originalBoundGet.call(this, keyName);
 }
 
 Ember.Object.prototype.get = newBoundGet;
