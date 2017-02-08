@@ -1,6 +1,6 @@
 module.exports = {
   extends: [
-    'simplabs/configs/ember-qunit',
-    'simplabs/plugins/qunit',
+    'simplabs/configs/ember-mocha',
+    'simplabs/plugins/mocha',
   ],
 };
