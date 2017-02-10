@@ -108,6 +108,36 @@ describe('Unit | auto-computed', function() {
     expect(obj.get('c')).to.equal(17);
   });
 
+  it('works for "firstObject"', function() {
+    let obj = Ember.Object.extend({
+      a: Ember.A([{ value: 'foo' }, { value: 'bar' }, { value: 'baz' }]),
+      b: computed(function() {
+        return this.get('a.firstObject.value');
+      }),
+    }).create();
+
+    expect(obj.get('b')).to.equal('foo');
+
+    obj.set('a.firstObject.value', 'foobar');
+
+    expect(obj.get('b')).to.equal('foobar');
+  });
+
+  it('works for "lastObject"', function() {
+    let obj = Ember.Object.extend({
+      a: Ember.A([{ value: 'foo' }, { value: 'bar' }, { value: 'baz' }]),
+      b: computed(function() {
+        return this.get('a.lastObject.value');
+      }),
+    }).create();
+
+    expect(obj.get('b')).to.equal('baz');
+
+    obj.set('a.lastObject.value', 'foobar');
+
+    expect(obj.get('b')).to.equal('foobar');
+  });
+
   describe('conditional CP', function() {
     let obj;
     beforeEach(function() {
