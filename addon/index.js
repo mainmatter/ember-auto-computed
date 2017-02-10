@@ -22,13 +22,16 @@ class StackEntry {
   }
 
   _add(keyName, value) {
-    this._dependentKeys.add(keyName);
     if (Ember.isArray(value)) {
+      this._dependentKeys.add(`${keyName}.[]`);
       return value.forEach(it => {
         this.deps.set(it, `${keyName}.@each`);
       });
     } else if (!isPrimitive(value)) {
+      this._dependentKeys.add(keyName);
       return this.deps.set(value, keyName);
+    } else {
+      this._dependentKeys.add(keyName);
     }
   }
 

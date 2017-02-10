@@ -149,7 +149,7 @@ describe('Unit | auto-computed', function() {
     }).create();
 
     expect(obj.get('b')).to.deep.equal([{ value: 'foo' }, { value: 'bar' }, { value: 'baz' }]);
-    expect(obj['b']._dependentKeys).to.deep.equal(['a']);
+    expect(obj['b']._dependentKeys).to.deep.equal(['a.[]']);
   });
 
   it('works for mapping objects', function() {
@@ -161,7 +161,7 @@ describe('Unit | auto-computed', function() {
     }).create();
 
     expect(obj.get('b')).to.deep.equal(['foo', 'bar', 'baz']);
-    expect(obj['b']._dependentKeys).to.deep.equal(['a', 'a.@each.value']);
+    expect(obj['b']._dependentKeys).to.deep.equal(['a.[]', 'a.@each.value']);
   });
 
   it('works duplicate dep keys', function() {
@@ -175,6 +175,28 @@ describe('Unit | auto-computed', function() {
 
     expect(obj.get('c')).to.equal('foofoo');
     expect(obj['c']._dependentKeys).to.deep.equal(['a', 'b']);
+  });
+
+  it('works for todos example', function() {
+    let obj = Ember.Object.extend({
+      todos: null,
+
+      init() {
+        this.set('todos', [
+          Ember.Object.create({ isDone: true }),
+          Ember.Object.create({ isDone: false }),
+          Ember.Object.create({ isDone: true }),
+        ]);
+      },
+
+      selectedTodo: null,
+      indexOfSelectedTodo: computed(function() {
+        return this.get('todos').indexOf(this.get('selectedTodo'));
+      })
+    }).create();
+
+    expect(obj.get('indexOfSelectedTodo')).to.equal(-1);
+    expect(obj['indexOfSelectedTodo']._dependentKeys).to.deep.equal(['todos.[]', 'selectedTodo']);
   });
 
   describe('conditional CP', function() {
