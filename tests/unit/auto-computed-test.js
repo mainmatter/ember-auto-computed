@@ -117,6 +117,7 @@ describe('Unit | auto-computed', function() {
     }).create();
 
     expect(obj.get('b')).to.equal('foo');
+    expect(obj['b']._dependentKeys).to.deep.equal(['a.firstObject.value']);
 
     obj.set('a.firstObject.value', 'foobar');
 
@@ -132,10 +133,35 @@ describe('Unit | auto-computed', function() {
     }).create();
 
     expect(obj.get('b')).to.equal('baz');
+    expect(obj['b']._dependentKeys).to.deep.equal(['a.lastObject.value']);
 
     obj.set('a.lastObject.value', 'foobar');
 
     expect(obj.get('b')).to.equal('foobar');
+  });
+
+  it('works for array', function() {
+    let obj = Ember.Object.extend({
+      a: [{ value: 'foo' }, { value: 'bar' }, { value: 'baz' }],
+      b: computed(function() {
+        return this.get('a');
+      }),
+    }).create();
+
+    expect(obj.get('b')).to.deep.equal([{ value: 'foo' }, { value: 'bar' }, { value: 'baz' }]);
+    expect(obj['b']._dependentKeys).to.deep.equal(['a.[]']);
+  });
+
+  it('works for mapping objects', function() {
+    let obj = Ember.Object.extend({
+      a: [{ value: 'foo' }, { value: 'bar' }, { value: 'baz' }],
+      b: computed(function() {
+        return this.get('a').map(it => Ember.get(it, 'value'));
+      }),
+    }).create();
+
+    expect(obj.get('b')).to.deep.equal(['foo', 'bar', 'baz']);
+    expect(obj['b']._dependentKeys).to.deep.equal(['a.[]', 'a.@each.value']);
   });
 
   describe('conditional CP', function() {

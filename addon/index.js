@@ -10,18 +10,32 @@ class StackEntry {
 
   handleGet(obj, keyName, value) {
     if (obj === this.obj) {
-      return this.deps.set(value, keyName);
+      if (Ember.isArray(value)) {
+        return value.forEach(it => {
+          this.deps.set(it, `${keyName}.@each`);
+        });
+      } else {
+        return this.deps.set(value, keyName);
+      }
     }
 
     let objKey = this.deps.get(obj);
     if (objKey !== undefined) {
       let fullKey = [objKey, keyName].join('.');
-      this.deps.set(value, fullKey);
+
+      if (Ember.isArray(value)) {
+        return value.forEach(it => {
+          this.deps.set(it, `${fullKey}.@each`);
+        });
+      } else {
+        return this.deps.set(value, fullKey);
+      }
     }
   }
 
   get dependentKeys() {
-    return Array.from(this.deps.values());
+    let set = new Set(this.deps.values());
+    return Array.from(set.values());
   }
 }
 
