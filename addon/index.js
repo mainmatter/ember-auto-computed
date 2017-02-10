@@ -11,13 +11,9 @@ function newGet(obj, keyName) {
   return originalGet(obj, keyName);
 }
 
-Ember.get = newGet;
-
-let originalBoundGet = Ember.Object.prototype.get;
-
 function newBoundGet(keyName) {
-  console.log(this, keyName);
-  return originalBoundGet.call(this, keyName);
+  return newGet(this, keyName);
 }
 
+Ember.get = newGet;
 Ember.Object.prototype.get = newBoundGet;
