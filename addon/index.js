@@ -6,15 +6,18 @@ class StackEntry {
   constructor(obj) {
     this.obj = obj;
     this.deps = new Map();
+    this._dependentKeys = new Set();
   }
 
   handleGet(obj, keyName, value) {
     if (obj === this.obj) {
       if (Ember.isArray(value)) {
         return value.forEach(it => {
+          this._dependentKeys.add(`${keyName}.@each`);
           this.deps.set(it, `${keyName}.@each`);
         });
       } else {
+        this._dependentKeys.add(keyName);
         return this.deps.set(value, keyName);
       }
     }
@@ -25,17 +28,18 @@ class StackEntry {
 
       if (Ember.isArray(value)) {
         return value.forEach(it => {
+          this._dependentKeys.add(`${fullKey}.@each`);
           this.deps.set(it, `${fullKey}.@each`);
         });
       } else {
+        this._dependentKeys.add(fullKey);
         return this.deps.set(value, fullKey);
       }
     }
   }
 
   get dependentKeys() {
-    let set = new Set(this.deps.values());
-    return Array.from(set.values());
+    return Array.from(this._dependentKeys.values());
   }
 }
 

@@ -164,7 +164,7 @@ describe('Unit | auto-computed', function() {
     expect(obj['b']._dependentKeys).to.deep.equal(['a.[]', 'a.@each.value']);
   });
 
-  it.skip('works duplicate dep keys', function() {
+  it('works duplicate dep keys', function() {
     let obj = Ember.Object.extend({
       a: 'foo',
       b: 'foo',
