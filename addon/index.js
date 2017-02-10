@@ -11,28 +11,24 @@ class StackEntry {
 
   handleGet(obj, keyName, value) {
     if (obj === this.obj) {
-      this._dependentKeys.add(keyName);
-      if (Ember.isArray(value)) {
-        return value.forEach(it => {
-          this.deps.set(it, `${keyName}.@each`);
-        });
-      } else if (!isPrimitive(value)) {
-        return this.deps.set(value, keyName);
+      this._add(keyName, value);
+    } else {
+      let objKey = this.deps.get(obj);
+      if (objKey !== undefined) {
+        let fullKey = [objKey, keyName].join('.');
+        this._add(fullKey, value);
       }
     }
+  }
 
-    let objKey = this.deps.get(obj);
-    if (objKey !== undefined) {
-      let fullKey = [objKey, keyName].join('.');
-      this._dependentKeys.add(fullKey);
-
-      if (Ember.isArray(value)) {
-        return value.forEach(it => {
-          this.deps.set(it, `${fullKey}.@each`);
-        });
-      } else if (!isPrimitive(value)) {
-        return this.deps.set(value, fullKey);
-      }
+  _add(keyName, value) {
+    this._dependentKeys.add(keyName);
+    if (Ember.isArray(value)) {
+      return value.forEach(it => {
+        this.deps.set(it, `${keyName}.@each`);
+      });
+    } else if (!isPrimitive(value)) {
+      return this.deps.set(value, keyName);
     }
   }
 
