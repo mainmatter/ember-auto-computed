@@ -164,6 +164,19 @@ describe('Unit | auto-computed', function() {
     expect(obj['b']._dependentKeys).to.deep.equal(['a.[]', 'a.@each.value']);
   });
 
+  it.skip('works duplicate dep keys', function() {
+    let obj = Ember.Object.extend({
+      a: 'foo',
+      b: 'foo',
+      c: computed(function() {
+        return this.get('a') + this.get('b');
+      }),
+    }).create();
+
+    expect(obj.get('c')).to.equal('foofoo');
+    expect(obj['c']._dependentKeys).to.deep.equal(['a', 'b']);
+  });
+
   describe('conditional CP', function() {
     let obj;
     beforeEach(function() {
