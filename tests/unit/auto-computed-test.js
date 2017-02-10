@@ -89,10 +89,22 @@ describe('Unit | auto-computed', function() {
       expect(obj.get('d')).to.equal(17);
     });
 
+    it('only depends on "a" and "b" initially', function() {
+      expect(obj.get('d')).to.equal(17);
+      expect(obj['d']._dependentKeys).to.deep.equal(['a', 'b']);
+    });
+
     it('changes if "a" changes', function() {
       expect(obj.get('d')).to.equal(17);
       obj.set('a', false);
       expect(obj.get('d')).to.equal(42);
+    });
+
+    it('only depends on "a" and "c" after changing "a"', function() {
+      expect(obj.get('d')).to.equal(17);
+      obj.set('a', false);
+      expect(obj.get('d')).to.equal(42);
+      expect(obj['d']._dependentKeys).to.deep.equal(['a', 'c']);
     });
 
     it('changes if "b" changes', function() {
