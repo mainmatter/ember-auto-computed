@@ -177,7 +177,29 @@ describe('Unit | auto-computed', function() {
     expect(obj['c']._dependentKeys).to.deep.equal(['a', 'b']);
   });
 
-  it('works for todos example', function() {
+  it('works for todos @each example', function() {
+    let obj = Ember.Object.extend({
+      todos: null,
+
+      init() {
+        this.set('todos', [
+          Ember.Object.create({ isDone: true }),
+          Ember.Object.create({ isDone: false }),
+          Ember.Object.create({ isDone: true }),
+        ]);
+      },
+
+      incomplete: computed(function() {
+        let todos = this.get('todos');
+        return todos.filter(it => Ember.get(it, 'isDone') === false);
+      }),
+    }).create();
+
+    expect(obj.get('incomplete')).to.have.lengthOf(1);
+    expect(obj['incomplete']._dependentKeys).to.deep.equal(['todos.[]', 'todos.@each.isDone']);
+  });
+
+  it('works for todos [] example', function() {
     let obj = Ember.Object.extend({
       todos: null,
 
