@@ -13,11 +13,19 @@ class StackEntry {
   }
 }
 
+let trackThis;
+let trackedDeps = [];
+
 export default function(cb) {
   return Ember.computed(function() {
     let cpName = propStack.slice(-1)[0].keyName;
     console.log('CP:', cpName);
-    return cb.call(this);
+    trackThis = this;
+    let result = cb.call(this);
+    console.log(trackedDeps);
+    trackThis = undefined;
+    trackedDeps = [];
+    return result;
   });
 }
 
@@ -25,6 +33,9 @@ let originalGet = Ember.get;
 
 function newGet(obj, keyName) {
   propStack.push(new StackEntry(obj, keyName));
+  if (obj === trackThis) {
+    trackedDeps.push(keyName);
+  }
   let value = originalGet(obj, keyName);
   propStack.pop();
   return value;
