@@ -149,7 +149,7 @@ describe('Unit | auto-computed', function() {
     }).create();
 
     expect(obj.get('b')).to.deep.equal([{ value: 'foo' }, { value: 'bar' }, { value: 'baz' }]);
-    expect(obj['b']._dependentKeys).to.deep.equal(['a.[]']);
+    expect(obj['b']._dependentKeys).to.deep.equal(['a']);
   });
 
   it('works for mapping objects', function() {
@@ -161,7 +161,7 @@ describe('Unit | auto-computed', function() {
     }).create();
 
     expect(obj.get('b')).to.deep.equal(['foo', 'bar', 'baz']);
-    expect(obj['b']._dependentKeys).to.deep.equal(['a.[]', 'a.@each.value']);
+    expect(obj['b']._dependentKeys).to.deep.equal(['a', 'a.@each.value']);
   });
 
   it('works duplicate dep keys', function() {
