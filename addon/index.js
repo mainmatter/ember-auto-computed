@@ -16,7 +16,7 @@ class StackEntry {
         return value.forEach(it => {
           this.deps.set(it, `${keyName}.@each`);
         });
-      } else {
+      } else if (!isPrimitive(value)) {
         return this.deps.set(value, keyName);
       }
     }
@@ -30,7 +30,7 @@ class StackEntry {
         return value.forEach(it => {
           this.deps.set(it, `${fullKey}.@each`);
         });
-      } else {
+      } else if (!isPrimitive(value)) {
         return this.deps.set(value, fullKey);
       }
     }
@@ -70,3 +70,8 @@ function newBoundGet(keyName) {
 
 Ember.get = newGet;
 Ember.Object.prototype.get = newBoundGet;
+
+/* eslint-disable eqeqeq */
+function isPrimitive(value) {
+  return value == null || (typeof value !== 'function' && typeof value !== 'object');
+}
