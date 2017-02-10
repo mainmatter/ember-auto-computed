@@ -7,6 +7,12 @@ class StackEntry {
     this.obj = obj;
     this.deps = [];
   }
+
+  handleGet(obj, keyName) {
+    if (obj === this.obj) {
+      this.deps.push(keyName);
+    }
+  }
 }
 
 export default function(cb) {
@@ -25,8 +31,8 @@ let originalGet = Ember.get;
 
 function newGet(obj, keyName) {
   let entry = propStack.slice(-1)[0];
-  if (entry && obj === entry.obj) {
-    entry.deps.push(keyName);
+  if (entry) {
+    entry.handleGet(obj, keyName);
   }
   return originalGet(obj, keyName);
 }
