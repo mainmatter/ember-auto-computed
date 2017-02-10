@@ -5,7 +5,9 @@ let propStack = [];
 class StackEntry {
   constructor(obj) {
     this.obj = obj;
-    this.deps = new Map();
+    // Map of tracked objects and the paths through which they are reachable from `this.obj`
+    this._trackedObjects = new Map();
+    // Set of dependent keys
     this._dependentKeys = new Set();
   }
 
@@ -13,7 +15,7 @@ class StackEntry {
     if (obj === this.obj) {
       this._add(keyName, value);
     } else {
-      let objKey = this.deps.get(obj);
+      let objKey = this._trackedObjects.get(obj);
       if (objKey !== undefined) {
         let fullKey = [objKey, keyName].join('.');
         this._add(fullKey, value);
@@ -26,14 +28,14 @@ class StackEntry {
       this._dependentKeys.add(keyName);
 
       if (!isPrimitive(value)) {
-        this.deps.set(value, keyName);
+        this._trackedObjects.set(value, keyName);
       }
 
     } else {
       this._dependentKeys.add(`${keyName}.[]`);
 
       value.forEach(it => {
-        this.deps.set(it, `${keyName}.@each`);
+        this._trackedObjects.set(it, `${keyName}.@each`);
       });
     }
   }
