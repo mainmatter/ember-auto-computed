@@ -17,7 +17,7 @@ describe('Unit | auto-computed', function() {
     expect(obj.get('computed')).to.equal(42);
   });
 
-  it.skip('recomputes on dependency change', function() {
+  it('recomputes on dependency change', function() {
     let obj = Ember.Object.extend({
       a: 5,
       b: 37,
@@ -33,7 +33,22 @@ describe('Unit | auto-computed', function() {
     expect(obj.get('computed')).to.equal(38);
   });
 
-  it.skip('works for nested computed properties', function() {
+  it('works for nested computed properties', function() {
+    let obj = Ember.Object.extend({
+      a: 37,
+      b: computed(function() {
+        return Ember.get(this, 'a') + 5;
+      }),
+      c: computed(function() {
+        return Ember.get(this, 'b') - 25;
+      }),
+    }).create();
+
+    expect(obj.get('b')).to.equal(42);
+    expect(obj.get('c')).to.equal(17);
+  });
+
+  it('recomputes for nested computed properties', function() {
     let obj = Ember.Object.extend({
       a: 0,
       b: computed(function() {
@@ -45,12 +60,11 @@ describe('Unit | auto-computed', function() {
     }).create();
 
     expect(obj.get('b')).to.equal(5);
-    expect(obj.get('c')).to.equal(-25);
+    expect(obj.get('c')).to.equal(-20);
 
     obj.set('a', 37);
 
     expect(obj.get('b')).to.equal(42);
     expect(obj.get('c')).to.equal(17);
   });
-
 });

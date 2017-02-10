@@ -3,42 +3,32 @@ import Ember from 'ember';
 let propStack = [];
 
 class StackEntry {
-  constructor(obj, keyName) {
+  constructor(obj) {
     this.obj = obj;
-    this.keyName = keyName;
-  }
-
-  toString() {
-    return `${this.obj}.${this.keyName}`;
+    this.deps = [];
   }
 }
 
-let trackThis;
-let trackedDeps = [];
-
 export default function(cb) {
-  return Ember.computed(function() {
-    let cpName = propStack.slice(-1)[0].keyName;
-    console.log('CP:', cpName);
-    trackThis = this;
+  let computed = Ember.computed(function() {
+    propStack.push(new StackEntry(this));
     let result = cb.call(this);
-    console.log(trackedDeps);
-    trackThis = undefined;
-    trackedDeps = [];
+    let entry = propStack.pop();
+    computed.property(...entry.deps);
     return result;
   });
+
+  return computed;
 }
 
 let originalGet = Ember.get;
 
 function newGet(obj, keyName) {
-  propStack.push(new StackEntry(obj, keyName));
-  if (obj === trackThis) {
-    trackedDeps.push(keyName);
+  let entry = propStack.slice(-1)[0];
+  if (entry && obj === entry.obj) {
+    entry.deps.push(keyName);
   }
-  let value = originalGet(obj, keyName);
-  propStack.pop();
-  return value;
+  return originalGet(obj, keyName);
 }
 
 function newBoundGet(keyName) {
