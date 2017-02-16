@@ -5,6 +5,42 @@ import { expect } from 'chai';
 import { describe, it, beforeEach } from 'mocha';
 
 describe('Unit | auto-computed', function() {
+  it('does not persistently modify Ember.get when the CP function throws', function() {
+    expect(() => {
+      let obj = Ember.Object.extend({
+        a: 5,
+        b: 37,
+        computed: computed(function() {
+          throw new Error('err!');
+        }),
+      }).create();
+
+      try {
+        obj.get('computed');
+      } catch (_) {
+        // ignore this
+      }
+    }).to.not.change(Ember, 'get');
+  });
+
+  it('does not persistently modify Ember.Object.prototype.get when the CP function throws', function() {
+    expect(() => {
+      let obj = Ember.Object.extend({
+        a: 5,
+        b: 37,
+        computed: computed(function() {
+          throw new Error('err!');
+        }),
+      }).create();
+
+      try {
+        obj.get('computed');
+      } catch (_) {
+        // ignore this
+      }
+    }).to.not.change(Ember.Object.prototype, 'get');
+  });
+
   it('computes initial value', function() {
     let obj = Ember.Object.extend({
       a: 5,
