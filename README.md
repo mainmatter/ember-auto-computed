@@ -1,27 +1,18 @@
-# ember-auto-computed
+[![Build Status](https://travis-ci.org/simplabs/ember-auto-computed.svg?branch=master)](https://travis-ci.org/simplabs/ember-auto-computed)
 
-This README outlines the details of collaborating on this Ember addon.
+#  ember-auto-computed
 
-## Installation
+ember-auto-computed introduce a mechanism for computed properties to
+automatically track their dependent keys so they don't have to be defined
+upfront.
 
-* `git clone <repository-url>` this repository
-* `cd ember-auto-computed`
-* `npm install`
-* `bower install`
+__This is an experiment and not (at all!!!) ready to production use!!!__
 
-## Running
+## License
 
-* `ember serve`
-* Visit your app at [http://localhost:4200](http://localhost:4200).
+ember-auto-computed is developed by and &copy;
+[simplabs GmbH](http://simplabs.com) and contributors. It is released under the
+[MIT License](LICENSE).
 
-## Running Tests
-
-* `npm test` (Runs `ember try:each` to test your addon against multiple Ember versions)
-* `ember test`
-* `ember test --server`
-
-## Building
-
-* `ember build`
-
-For more information on using ember-cli, visit [https://ember-cli.com/](https://ember-cli.com/).
+ember-auto-computed is not an official part of [Ember.js](http://emberjs.com)
+and is not maintained by the Ember.js Core Team.
