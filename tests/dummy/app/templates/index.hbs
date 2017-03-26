@@ -1,0 +1,10 @@
+<label>
+  First Name:
+  <input type="text" value="{{firstName}}" oninput={{action (mut firstName) value="target.value"}}>
+</label>
+<label>
+  Last Name:
+  <input type="text" value="{{lastName}}" oninput={{action (mut lastName) value="target.value"}}>
+</label>
+
+<p>Hey, {{fullName}}</p>
