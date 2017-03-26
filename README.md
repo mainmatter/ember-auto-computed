@@ -6,7 +6,7 @@ ember-auto-computed introduce a mechanism for computed properties to
 automatically track their dependent keys so they don't have to be defined
 upfront.
 
-__This is an experiment and not (at all!!!) ready to production use!!!__
+__This is an experiment and not (at all!!!) ready for production use!!!__
 
 ## Example
 
