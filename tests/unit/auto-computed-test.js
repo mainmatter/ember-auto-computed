@@ -316,4 +316,21 @@ describe('Unit | auto-computed', function() {
       expect(obj.get('d')).to.equal(1);
     });
   });
+
+  it('allows defining extra dependencies that can not be tracked automatically', function() {
+    let obj = Ember.Object.extend({
+      i18n: {
+        t(key) {
+          return `translation for ${key}`;
+        }
+      },
+
+      translation: computed(function() {
+        return this.get('i18n').t('translationKey');
+      }).depend('i18n.locale')
+    }).create();
+
+    obj.get('translation');
+    expect(obj['translation']._dependentKeys).to.deep.equal(['i18n', 'i18n.locale']);
+  });
 });

@@ -70,13 +70,21 @@ export default function(cb) {
       propStack.push(new StackEntry(this));
       let result = cb.call(this);
       let entry = propStack.pop();
-      computed.property(...entry.dependentKeys);
+      let meta = computed._meta || {};
+      let staticDependentKeys = meta.__staticDependencies__ || [];
+      let dependentKeys = [...entry.dependentKeys, ...staticDependentKeys];
+      computed.property(...dependentKeys);
       return result;
     } finally {
       Ember.get = originalGet;
       Ember.Object.prototype.get = originalBoundGet;
     }
   });
+
+  computed.depend = function(...keys) {
+    this.meta({ __staticDependencies__: keys });
+    return this;
+  };
 
   return computed;
 }
