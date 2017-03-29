@@ -8,8 +8,6 @@ describe('Unit | auto-computed', function() {
   it('does not persistently modify Ember.get when the CP function throws', function() {
     expect(() => {
       let obj = Ember.Object.extend({
-        a: 5,
-        b: 37,
         computed: computed(function() {
           throw new Error('err!');
         }),
@@ -26,8 +24,6 @@ describe('Unit | auto-computed', function() {
   it('does not persistently modify Ember.Object.prototype.get when the CP function throws', function() {
     expect(() => {
       let obj = Ember.Object.extend({
-        a: 5,
-        b: 37,
         computed: computed(function() {
           throw new Error('err!');
         }),
@@ -39,6 +35,38 @@ describe('Unit | auto-computed', function() {
         // ignore this
       }
     }).to.not.change(Ember.Object.prototype, 'get');
+  });
+
+  it('does not persistently modify Ember.getWithDefault when the CP function throws', function() {
+    expect(() => {
+      let obj = Ember.Object.extend({
+        computed: computed(function() {
+          throw new Error('err!');
+        }),
+      }).create();
+
+      try {
+        obj.getWithDefault('computed');
+      } catch (_) {
+        // ignore this
+      }
+    }).to.not.change(Ember, 'getWithDefault');
+  });
+
+  it('does not persistently modify Ember.Object.prototype.getWithDefault when the CP function throws', function() {
+    expect(() => {
+      let obj = Ember.Object.extend({
+        computed: computed(function() {
+          throw new Error('err!');
+        }),
+      }).create();
+
+      try {
+        obj.getWithDefault('computed');
+      } catch (_) {
+        // ignore this
+      }
+    }).to.not.change(Ember.Object.prototype, 'getWithDefault');
   });
 
   it('computes initial value', function() {
@@ -174,6 +202,17 @@ describe('Unit | auto-computed', function() {
     obj.set('a.lastObject.value', 'foobar');
 
     expect(obj.get('b')).to.equal('foobar');
+  });
+
+  it('works for "getWithDefault"', function() {
+    let obj = Ember.Object.extend({
+      b: computed(function() {
+        return this.getWithDefault('a', 1);
+      }),
+    }).create();
+
+    expect(obj.get('b')).to.equal(1);
+    expect(obj['b']._dependentKeys).to.deep.equal(['a']);
   });
 
   it('works for array', function() {

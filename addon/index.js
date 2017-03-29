@@ -48,7 +48,9 @@ class StackEntry {
 export default function(cb) {
   let computed = Ember.computed(function() {
     let originalGet = Ember.get;
+    let originalGetWithDefault = Ember.getWithDefault;
     let originalBoundGet = Ember.Object.prototype.get;
+    let originalBoundGetWithDefault = Ember.Object.prototype.getWithDefault;
 
     function newGet(obj, keyName) {
       let entry = propStack.slice(-1)[0];
@@ -59,12 +61,27 @@ export default function(cb) {
       return value;
     }
 
+    function newGetWithDefault(obj, keyName, def) {
+      let entry = propStack.slice(-1)[0];
+      let value = originalGetWithDefault(obj, keyName, def);
+      if (entry) {
+        entry.handleGet(obj, keyName, value);
+      }
+      return value;
+    }
+
     function newBoundGet(keyName) {
       return newGet(this, keyName);
     }
 
+    function newBoundGetWithDefault(keyName, def) {
+      return newGetWithDefault(this, keyName, def);
+    }
+
     Ember.get = newGet;
     Ember.Object.prototype.get = newBoundGet;
+    Ember.getWithDefault = newGetWithDefault;
+    Ember.Object.prototype.getWithDefault = newBoundGetWithDefault;
 
     try {
       propStack.push(new StackEntry(this));
@@ -75,6 +92,8 @@ export default function(cb) {
     } finally {
       Ember.get = originalGet;
       Ember.Object.prototype.get = originalBoundGet;
+      Ember.getWithDefault = originalGetWithDefault;
+      Ember.Object.prototype.getWithDefault = originalBoundGetWithDefault;
     }
   });
 
